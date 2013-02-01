@@ -17,17 +17,6 @@ module Veewee
           enable_vnc
         end
 
-        def dc
-          name ||= definition.vsphere[:vm_options][:datacenter]
-          # if there's only one datacenter, use it (also works in standalone ESXi cases)
-          if vim.serviceContent.rootFolder.children.grep(RbVmomi::VIM::Datacenter) == 1
-            name ||= vim.serviceInstance.find_datacenter.name
-          end
-          @dc ||= vim.serviceInstance.find_datacenter name
-          raise Veewee::Error, "Must specify a datacenter in the :vm_options section of your definition.rb" if @dc.nil?
-          return @dc
-        end
-
         def load_iso datastore, host_name
           filename = definition.iso_file
           local_path=File.join(env.config.veewee.iso_dir,filename)
